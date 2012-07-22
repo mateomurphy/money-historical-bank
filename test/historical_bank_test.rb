@@ -51,7 +51,7 @@ describe Money::Bank::HistoricalBank do
     end
 
     it 'should download new rates from url' do
-      source = Money::Bank::OpenExchangeRatesLoader::HIST_URL + '2009-09-09.json'
+      source = Money::Bank::OpenExchangeRatesLoader.historical_url('2009-09-09')
       stub(@bank).open(source) { File.open @cache_path }
       d1 = Date.new(2009,9,9)
       
