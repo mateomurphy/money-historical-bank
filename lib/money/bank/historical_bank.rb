@@ -258,6 +258,8 @@ class Money
       def internal_set_rate(date, from, to, rate)
         date_rates = @rates[date] ||= {}
         date_rates[rate_key_for(from, to)] = rate
+      rescue Money::Currency::UnknownCurrency => e
+        nil
       end
     end
   end
