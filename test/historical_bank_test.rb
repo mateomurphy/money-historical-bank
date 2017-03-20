@@ -33,18 +33,17 @@ describe Money::Bank::HistoricalBank do
     it "should return the correct rates using exchange_with a date" do
       d1 = Date.new(2001,1,1)
       @bank.set_rate(d1, "USD", "EUR", 0.73062465)
-      @bank.exchange_with(d1, 5000.to_money('EUR'), 'USD').cents.must_equal 684345
+      @bank.exchange_with(d1, Money.new(500000, 'EUR'), 'USD').cents.must_equal 684345
     end
+
     it "should return the correct rates using exchange_with no date (today)" do
       d1 = Date.today
       @bank.set_rate(d1, "USD", "EUR", 0.8)
-      @bank.exchange_with(5000.to_money('EUR'), 'USD').cents.must_equal 625000
+      @bank.exchange_with(Money.new(500000, 'EUR'), 'USD').cents.must_equal 625000
     end
-
   end
 
   describe 'no rates available yet' do
-    include RR::Adapters::TestUnit
     before do
       @bank = Money::Bank::HistoricalBank.new
       @cache_path = "#{File.dirname(__FILE__)}/test.json"
@@ -54,10 +53,9 @@ describe Money::Bank::HistoricalBank do
       source = Money::Bank::OpenExchangeRatesLoader.historical_url('2009-09-09')
       stub(@bank).open(source) { File.open @cache_path }
       d1 = Date.new(2009,9,9)
-      
+
       rate = @bank.get_rate(d1, 'USD', 'EUR')
       rate.must_equal 0.73062465
     end
   end
-
 end
