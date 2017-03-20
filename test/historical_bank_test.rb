@@ -6,6 +6,7 @@ describe Money::Bank::HistoricalBank do
 
   describe 'update_rates' do
     before do
+      Money.infinite_precision = true
       @bank = Money::Bank::HistoricalBank.new
       #@bank.cache = @cache_path
       #@bank.update_rates
@@ -33,13 +34,19 @@ describe Money::Bank::HistoricalBank do
     it "should return the correct rates using exchange_with a date" do
       d1 = Date.new(2001,1,1)
       @bank.set_rate(d1, "USD", "EUR", 0.73062465)
-      @bank.exchange_with(d1, Money.new(500000, 'EUR'), 'USD').cents.must_equal 684345
+      @bank.exchange_with(d1, Money.new(500000, 'EUR'), 'USD').cents.to_i.must_equal 684345
     end
 
     it "should return the correct rates using exchange_with no date (today)" do
       d1 = Date.today
       @bank.set_rate(d1, "USD", "EUR", 0.8)
       @bank.exchange_with(Money.new(500000, 'EUR'), 'USD').cents.must_equal 625000
+    end
+
+    it "should return the correct fractional rates" do
+      d1 = Date.today
+      @bank.set_rate(d1, "USD", "EUR", 0.8)
+      @bank.exchange_with(Money.new(0.5, 'EUR'), 'USD').cents.must_equal 0.625
     end
   end
 
